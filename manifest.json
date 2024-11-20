@@ -1,0 +1,18 @@
+{
+    "manifest_version": 2,
+    "name": "Doomscroll...NOT",
+    "version": "1.0",
+
+    "description": "Asks you whether you truly want to continue to a website.",
+
+    "permissions": [
+        "webRequest",
+        "webRequestBlocking",
+        "notifications",
+        "*://*/*"
+    ],
+
+    "background": {
+        "scripts": ["background.js"]
+    }
+}
