@@ -1,15 +1,11 @@
 function listener(details) {
     console.log("Hi!");
-    notify();
+    let updateData = {
+        url: "index.html"
+      };
+    let updating = browser.tabs.update(updateData);
+    console.log("Bye!");
     return {"cancel": true};
-}
-
-function notify() {
-    browser.notifications.create("confirmation", {
-        "type": "basic",
-        "title": "Doomscroll identified",
-        "message": "Are you sure you want to ruin your day?"
-    });
 }
 
 browser.webRequest.onBeforeRequest.addListener(
