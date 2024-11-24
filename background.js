@@ -3,17 +3,17 @@ function listener(details) {
     let updateData = {
         url: "index.html"
       };
-    browser.tabs.update(updateData).then(tab => doSomething(tab.id, details.url)).catch((err) => console.error(err));
+    browser.tabs.update(updateData).then(tab => sendMessage(tab.id, details.url, 5000)).catch((err) => console.error(err));
     console.log("Bye!");
     return {"cancel": true};
 }
 
-function doSomething(tabId, targetUrl) {
+function sendMessage(tabId, targetUrl, delay) {
     return new Promise((resolve) => {
       setTimeout(() => {
         browser.tabs.sendMessage(tabId, {"targetUrl": targetUrl});
         resolve("Message sent");
-      }, 5000);
+      }, delay);
     });
   }
   
