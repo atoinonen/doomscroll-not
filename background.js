@@ -41,15 +41,19 @@
         }
     }
 
-
-    let doomscrollSites = ["*://yle.fi/*", "*://www.reddit.com/*"];
     let whitelist = [];
+    let doomscrollSites = [];
 
-    browser.webRequest.onBeforeRequest.addListener(
-        listener,
-        { urls: doomscrollSites, types: ["main_frame"] },
-        ["blocking"]
-    );
-
-    browser.runtime.onMessage.addListener(continueToPage);
+    browser.storage.local.set({ "doomscrollSites": ["*://yle.fi/*", "*://www.reddit.com/*"] }).then(() => //For testing
+    browser.storage.local.get("doomscrollSites").then(item => {
+        console.log("Item: ", item);
+        doomscrollSites = item.doomscrollSites;
+        browser.webRequest.onBeforeRequest.addListener(
+            listener,
+            { urls: doomscrollSites, types: ["main_frame"] },
+            ["blocking"]
+        );
+        browser.runtime.onMessage.addListener(continueToPage);
+    }).catch((err) => console.error(err))
+    ).catch((err) => console.error(err)); //For testing
 }
