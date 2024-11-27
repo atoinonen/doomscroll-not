@@ -1,14 +1,6 @@
 {
     function listener(details) {
         console.log("Hi! Going to: ", details.url);
-        console.log("Whitelist:", whitelist);
-        for (const site of whitelist) {
-            console.log("Whitelisted site:", site);
-            if (details.url.match(site)) {
-                console.log("Continuing to ", details.url);
-                return {};
-            }
-        }
         let updateData = {
             url: "index.html"
         };
@@ -28,12 +20,19 @@
 
     function continueToPage(message, sender, sendResponse) {
         if (message.continue === true) {
-            let doomscrollSitesRegEx = doomscrollSites.map((site) => new RegExp(site.replaceAll(".", "\\.").replaceAll("*", ".*?").replaceAll("/", "\\/"), "g"));
-            console.log("Whitelist 1: ", whitelist);
-            whitelist.push(...doomscrollSitesRegEx.filter(site => message.webpage.match(site)));
-            console.log("Whitelist 2: ", whitelist);
-            //whitelist = whitelist.map((site) => new RegExp(site.replaceAll(".", "\\.").replaceAll("*", ".*?").replaceAll("/", "\\/"), "g"));
-            console.log("Whitelist 3: ", whitelist);
+            console.log("DoomscrollSites: ", doomscrollSites);
+            doomscrollSites = doomscrollSites.filter(site => message.webpage.match(new RegExp(site.replaceAll(".", "\\.").replaceAll("*", ".*?").replaceAll("/", "\\/"), "g")) === null);
+            console.log("DoomscrollSites 2: ", doomscrollSites);
+
+            console.log("Listener 1: ", browser.webRequest.onBeforeRequest.hasListener(listener));
+            browser.webRequest.onBeforeRequest.removeListener(listener);
+            console.log("Listener 2: ", browser.webRequest.onBeforeRequest.hasListener(listener));
+            browser.webRequest.onBeforeRequest.addListener(
+                listener,
+                { urls: doomscrollSites, types: ["main_frame"] },
+                ["blocking"]
+            );
+            console.log("Listener 3: ", browser.webRequest.onBeforeRequest.hasListener(listener));
             browser.tabs.update({ "url": message.webpage });
             return true;
         } else {
@@ -41,10 +40,9 @@
         }
     }
 
-    let whitelist = [];
     let doomscrollSites = [];
 
-    browser.storage.local.set({ "doomscrollSites": ["*://yle.fi/*", "*://www.reddit.com/*"] }).then(() => //For testing
+    browser.storage.local.set({ "doomscrollSites": ["*://yle.fi/*", "*://www.reddit.com/*", "*://www.youtube.com/shorts/*"] }).then(() => //For testing
     browser.storage.local.get("doomscrollSites").then(item => {
         console.log("Item: ", item);
         doomscrollSites = item.doomscrollSites;
