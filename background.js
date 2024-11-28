@@ -12,7 +12,7 @@
     function sendMessage(tabId, targetUrl, delay) {
         return new Promise((resolve) => {
             setTimeout(() => {
-                browser.tabs.sendMessage(tabId, { "targetUrl": targetUrl });
+                browser.tabs.sendMessage(tabId, { "targetUrl": targetUrl }).catch((err) => console.error(err));
                 resolve("Message sent");
             }, delay);
         });
