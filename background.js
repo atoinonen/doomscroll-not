@@ -4,7 +4,7 @@
         let updateData = {
             url: "index.html"
         };
-        browser.tabs.update(updateData).then(tab => sendMessage(tab.id, details.url, 5000)).catch((err) => console.error(err));
+        browser.tabs.update(details.tabId, updateData).then(tab => sendMessage(tab.id, details.url, 5000)).catch((err) => console.error(err));
         console.log("Bye!");
         return { "cancel": true };
     }
