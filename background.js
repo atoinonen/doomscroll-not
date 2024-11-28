@@ -42,7 +42,9 @@
 
     let doomscrollSites = [];
 
-    browser.storage.local.set({ "doomscrollSites": ["*://yle.fi/*", "*://www.reddit.com/*", "*://www.youtube.com/shorts/*"] }).then(() => //For testing
+    // *://www.youtube.com/shorts/* doesn't work when using links from youtube.com because instead of loading a new page (type=main_frame)
+    // youtube uses XMLHttpRequest so the listener doesn't fire. Changing listener's type from main_frame to fix this problem introduces a LOT of new problems.
+    browser.storage.local.set({ "doomscrollSites": ["*://yle.fi/*", "*://www.reddit.com/*", "*://www.youtube.com/shorts/*", "*://www.youtube.com/*"] }).then(() => //For testing
     browser.storage.local.get("doomscrollSites").then(item => {
         console.log("Item: ", item);
         doomscrollSites = item.doomscrollSites;
