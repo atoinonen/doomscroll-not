@@ -40,6 +40,30 @@
         }
     }
 
+    function addDoomscrollPage(message, sender, sendResponse) {
+        if (message.blockedUrl === undefined) {
+            return;
+        }
+        let url = new URL(message.blockedUrl);
+        let blockedSite = "*://" + url.hostname + "/*";
+        browser.storage.local.get("doomscrollSites").then(item => {
+            item.doomscrollSites.push(blockedSite);
+            browser.storage.local.set(item);
+        });
+
+        doomscrollSites.push(blockedSite);
+
+        console.log("Listener 1: ", browser.webRequest.onBeforeRequest.hasListener(listener));
+        browser.webRequest.onBeforeRequest.removeListener(listener);
+        console.log("Listener 2: ", browser.webRequest.onBeforeRequest.hasListener(listener));
+        browser.webRequest.onBeforeRequest.addListener(
+            listener,
+            { urls: doomscrollSites, types: ["main_frame"] },
+            ["blocking"]
+        );
+        console.log("Doomscroll sites: ", doomscrollSites);
+    }
+
     let doomscrollSites = [];
 
     // *://www.youtube.com/shorts/* doesn't work when using links from youtube.com because instead of loading a new page (type=main_frame)
@@ -54,6 +78,7 @@
             ["blocking"]
         );
         browser.runtime.onMessage.addListener(continueToPage);
+        browser.runtime.onMessage.addListener(addDoomscrollPage);
     }).catch((err) => console.error(err))
     ).catch((err) => console.error(err)); //For testing
 }

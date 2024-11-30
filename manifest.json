@@ -14,5 +14,10 @@
 
     "background": {
         "scripts": ["background.js"]
+    },
+
+    "browser_action": {
+        "default_title": "Doomscroll...NOT",
+        "default_popup": "popup/popup.html"
     }
 }
